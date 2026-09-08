@@ -1,4 +1,182 @@
 package io.github.ninsumb.identificadores
 
-class `Cuit-test` {
-}
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.nulls.shouldBeNull
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+
+/**
+ * Casos concretos de validación de CUIT.
+ *
+ * Los CUIT usados acá están verificados a mano contra la tabla de pesos.
+ * Ver `docs/decisiones/0004-casos-limite-modulo-11.md`.
+ */
+class CuitTest : StringSpec({
+
+    // ---------------------------------------------------------------
+    // Casos válidos
+    // ---------------------------------------------------------------
+
+    "acepta un CUIT válido de persona física" {
+        Cuit.isValid("20-12345678-6") shouldBe true
+    }
+
+    "acepta un CUIT válido de persona jurídica" {
+        // suma = 17, resto = 6, DV = 11 - 6 = 5
+        Cuit.isValid("30-00000001-5") shouldBe true
+    }
+
+    "acepta un CUIT con prefijo desconocido pero verificador correcto" {
+        // suma = 83, resto = 6, DV = 5
+        Cuit.isValid("99-00000001-5") shouldBe true
+    }
+
+    // ---------------------------------------------------------------
+    // Casos límite del módulo 11
+    // ---------------------------------------------------------------
+
+    "resto 0 produce dígito verificador 0" {
+        // 2000000006 -> suma = 22, resto = 0, DV = 0
+        Cuit.calcularDigitoVerificador("2000000006") shouldBe 0
+        Cuit.isValid("20-00000006-0") shouldBe true
+    }
+
+    "resto 1 no tiene dígito verificador posible" {
+        // 2000000001 -> suma = 12, resto = 1
+        Cuit.calcularDigitoVerificador("2000000001").shouldBeNull()
+    }
+
+    "un cuerpo con resto 1 se rechaza con cualquier dígito verificador" {
+        for (dv in 0..9) {
+            Cuit.isValid("20-00000001-$dv") shouldBe false
+        }
+    }
+
+    "el mismo número con prefijo 23 sí es válido" {
+        // 2300000001 -> suma = 24, resto = 2, DV = 9
+        Cuit.isValid("23-00000001-9") shouldBe true
+    }
+
+    "segundo caso verificado: prefijo 27 con resto 1 pasa a 23" {
+        // 2700000012 -> suma = 45, resto = 1  (sin DV posible)
+        Cuit.calcularDigitoVerificador("2700000012").shouldBeNull()
+        // 2300000012 -> suma = 29, resto = 7, DV = 4
+        Cuit.isValid("23-00000012-4") shouldBe true
+    }
+
+    // ---------------------------------------------------------------
+    // Rechazos
+    // ---------------------------------------------------------------
+
+    "rechaza un dígito verificador incorrecto" {
+        Cuit.isValid("20-12345678-7") shouldBe false
+    }
+
+    "rechaza longitudes distintas de 11" {
+        Cuit.isValid("2012345678") shouldBe false     // 10
+        Cuit.isValid("201234567861") shouldBe false   // 12
+        Cuit.isValid("") shouldBe false
+    }
+
+    "rechaza caracteres no numéricos" {
+        Cuit.isValid("20-1234567A-6") shouldBe false
+        Cuit.isValid("hola mundo!!") shouldBe false
+    }
+
+    "parseOrNull devuelve null en vez de tirar" {
+        Cuit.parseOrNull("20-12345678-7").shouldBeNull()
+    }
+
+    "parse tira IllegalArgumentException" {
+        shouldThrow<IllegalArgumentException> {
+            Cuit.parse("20-12345678-7")
+        }
+    }
+
+    // ---------------------------------------------------------------
+    // Normalización de entrada
+    // ---------------------------------------------------------------
+
+    "acepta el mismo CUIT con distintos separadores" {
+        val esperado = Cuit.parse("20123456786")
+
+        Cuit.parse("20-12345678-6") shouldBe esperado
+        Cuit.parse("20.12345678.6") shouldBe esperado
+        Cuit.parse("20 12345678 6") shouldBe esperado
+        Cuit.parse("  20-12345678-6  ") shouldBe esperado
+    }
+
+    // ---------------------------------------------------------------
+    // Componentes
+    // ---------------------------------------------------------------
+
+    "expone los componentes del CUIT" {
+        val cuit = Cuit.parse("20-12345678-6")
+
+        cuit.prefijo shouldBe "20"
+        cuit.numero shouldBe "12345678"
+        cuit.digitoVerificador shouldBe 6
+        cuit.valor shouldBe "20123456786"
+    }
+
+    "formatea con guiones" {
+        Cuit.parse("20123456786").formateado() shouldBe "20-12345678-6"
+    }
+
+    // ---------------------------------------------------------------
+    // Tipo de persona
+    // ---------------------------------------------------------------
+
+    "infiere persona física" {
+        Cuit.parse("20-12345678-6").tipoPersona shouldBe TipoPersona.FISICA
+        Cuit.parse("23-00000001-9").tipoPersona shouldBe TipoPersona.FISICA
+    }
+
+    "infiere persona jurídica" {
+        Cuit.parse("30-00000001-5").tipoPersona shouldBe TipoPersona.JURIDICA
+    }
+
+    "un prefijo desconocido no invalida, solo queda sin clasificar" {
+        val cuit = Cuit.parse("99-00000001-5")
+
+        cuit.shouldNotBeNull()
+        cuit.tipoPersona shouldBe TipoPersona.DESCONOCIDO
+    }
+
+    // ---------------------------------------------------------------
+    // Igualdad
+    // ---------------------------------------------------------------
+
+    "dos CUIT con el mismo valor son iguales" {
+        val a = Cuit.parse("20-12345678-6")
+        val b = Cuit.parse("20123456786")
+
+        a shouldBe b
+        a.hashCode() shouldBe b.hashCode()
+    }
+
+    "CUIT distintos no son iguales" {
+        Cuit.parse("20-12345678-6") shouldNotBe Cuit.parse("30-00000001-5")
+    }
+
+    // ---------------------------------------------------------------
+    // Precondiciones internas
+    // ---------------------------------------------------------------
+
+    "calcularDigitoVerificador exige exactamente 10 dígitos" {
+        shouldThrow<IllegalArgumentException> {
+            Cuit.calcularDigitoVerificador("123")
+        }
+        shouldThrow<IllegalArgumentException> {
+            Cuit.calcularDigitoVerificador("123456789012")
+        }
+    }
+
+    "calcularDigitoVerificador exige que sean dígitos" {
+        shouldThrow<IllegalArgumentException> {
+            Cuit.calcularDigitoVerificador("20123456AB")
+        }
+    }
+})
