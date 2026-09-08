@@ -12,12 +12,12 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 ## Dentro del alcance
 
 ### CUIT / CUIL
-- [ ] Validación de dígito verificador (módulo 11)
-- [ ] Parseo de componentes: prefijo, cuerpo, dígito verificador
-- [ ] Inferencia de tipo de persona (física / jurídica / desconocido) a partir del prefijo
-- [ ] Formateo con y sin separadores
-- [ ] Tolerancia de entrada: guiones, puntos, espacios, o sin separadores
-- [ ] Cálculo del dígito verificador esperado para un cuerpo de 10 dígitos
+- [x] Validación de dígito verificador (módulo 11)
+- [x] Parseo de componentes: prefijo, cuerpo, dígito verificador
+- [x] Inferencia de tipo de persona (física / jurídica / desconocido) a partir del prefijo
+- [x] Formateo con y sin separadores
+- [x] Tolerancia de entrada: guiones, puntos, espacios, o sin separadores
+- [x] Cálculo del dígito verificador esperado para un cuerpo de 10 dígitos
 
 ### CBU / CVU
 - [ ] Validación de la estructura de 22 dígitos en dos bloques
