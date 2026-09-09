@@ -20,6 +20,7 @@ class CuitTest : StringSpec({
     // ---------------------------------------------------------------
 
     "acepta un CUIT válido de persona física" {
+        // suma = 148, resto = 5, DV = 11 - 5 = 6
         Cuit.isValid("20-12345678-6") shouldBe true
     }
 
@@ -182,10 +183,22 @@ class CuitTest : StringSpec({
     "infiere persona física" {
         Cuit.parse("20-12345678-6").tipoPersona shouldBe TipoPersona.FISICA
         Cuit.parse("23-00000001-9").tipoPersona shouldBe TipoPersona.FISICA
+
+        // 24-12345678: suma = 164, resto = 10, DV = 11 - 10 = 1
+        Cuit.parse("24-12345678-1").tipoPersona shouldBe TipoPersona.FISICA
+
+        // 27-12345678: suma = 176, resto = 0, DV = 0
+        Cuit.parse("27-12345678-0").tipoPersona shouldBe TipoPersona.FISICA
     }
 
     "infiere persona jurídica" {
         Cuit.parse("30-00000001-5").tipoPersona shouldBe TipoPersona.JURIDICA
+
+        // 33-00000001: suma = 29, resto = 7, DV = 11 - 7 = 4
+        Cuit.parse("33-00000001-4").tipoPersona shouldBe TipoPersona.JURIDICA
+
+        // 34-00000001: suma = 33, resto = 0, DV = 0
+        Cuit.parse("34-00000001-0").tipoPersona shouldBe TipoPersona.JURIDICA
     }
 
     "un prefijo desconocido no invalida, solo queda sin clasificar" {
@@ -209,6 +222,24 @@ class CuitTest : StringSpec({
 
     "CUIT distintos no son iguales" {
         Cuit.parse("20-12345678-6") shouldNotBe Cuit.parse("30-00000001-5")
+    }
+
+    "un Cuit no es igual a null" {
+        val cuit: Any = Cuit.parse("20-12345678-6")
+        cuit shouldNotBe null
+    }
+
+    "un Cuit no es igual a un valor de otro tipo" {
+        val cuit: Any = Cuit.parse("20-12345678-6")
+        cuit shouldNotBe "20123456786"
+    }
+
+    // ---------------------------------------------------------------
+    // toString
+    // ---------------------------------------------------------------
+
+    "toString devuelve los 11 dígitos sin separadores" {
+        Cuit.parse("20-12345678-6").toString() shouldBe "20123456786"
     }
 
     // ---------------------------------------------------------------

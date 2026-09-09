@@ -88,8 +88,7 @@ class CuitPropertyTest : StringSpec({
     }
 
     "isValid y parseOrNull siempre coinciden" {
-        checkAll(cuerpo, Arb.int(0..9)) { c, dv ->
-            val candidato = c + dv
+        checkAll(Arb.string(0..30)) { candidato ->
             Cuit.isValid(candidato) shouldBe (Cuit.parseOrNull(candidato) != null)
         }
     }
@@ -122,6 +121,23 @@ class CuitPropertyTest : StringSpec({
             if (cuit != null) {
                 cuit.valor.all { it in '0'..'9' } shouldBe true
             }
+        }
+    }
+
+    /**
+     * `tipoPersona` es total: el `when` sobre [TipoPersona] es exhaustivo con
+     * un `else -> DESCONOCIDO`, así que no hay prefijo que quede sin
+     * clasificar ni que haga tirar la propiedad. Ver ADR 0002.
+     *
+     * `cuitValido` construye cuerpos al azar, así que la mayoría de los
+     * prefijos ejercitados acá no están en las listas conocidas: la
+     * propiedad recorre sobre todo el camino [TipoPersona.DESCONOCIDO], y de
+     * paso, cuando el azar cae en un prefijo conocido, también los otros dos.
+     */
+    "tipoPersona es total y nunca tira, para cualquier CUIT válido" {
+        checkAll(cuitValido) { cuit ->
+            val tipo = Cuit.parse(cuit).tipoPersona
+            (tipo in TipoPersona.entries) shouldBe true
         }
     }
 })
