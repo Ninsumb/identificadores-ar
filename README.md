@@ -16,7 +16,7 @@ Cuit.isValid("20-12345678-6")     // true
 val cuit = Cuit.parse("20-12345678-6")
 cuit.prefijo                       // "20"
 cuit.numero                        // "12345678"
-cuit.tipoPersona                   // TipoPersona.FISICA
+cuit.tipoPersona                   // TipoPersona.FISICA (orientativo, ver más abajo)
 cuit.formateado()                  // "20-12345678-6"
 
 // Para input de usuario
@@ -24,6 +24,10 @@ val quizas = Cuit.parseOrNull(loQueEscribioElUsuario)
 ```
 
 Acepta guiones, puntos y espacios como separadores, o ninguno.
+
+`tipoPersona` es orientativo, no una fuente de verdad: se infiere de una lista
+de prefijos administrativos que puede cambiar con el tiempo. ARCA (ex AFIP) es
+la fuente de verdad definitiva.
 
 ## Estado
 
@@ -41,6 +45,9 @@ las decisiones de diseño.
 
 - No consulta el padrón de ARCA (ex AFIP): la validación es matemática, no
   verifica existencia ni vigencia.
+- No garantiza el tipo de persona: la inferencia de `tipoPersona` es
+  orientativa, a partir de una lista de prefijos conocidos. ARCA (ex AFIP) es
+  la fuente de verdad definitiva.
 - No resuelve alias a CBU: no existe mecanismo público para hacerlo.
 - No hace llamadas de red. Todo el cómputo es local.
 
