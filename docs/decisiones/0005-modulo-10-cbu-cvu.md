@@ -2,7 +2,6 @@
 
 - **Estado:** Aceptada
 - **Fecha:** 2026-09-09
-- **Fase:** 3
 
 ## Contexto
 
