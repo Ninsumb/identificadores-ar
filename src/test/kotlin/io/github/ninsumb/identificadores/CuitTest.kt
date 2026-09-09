@@ -85,6 +85,56 @@ class CuitTest : StringSpec({
         Cuit.isValid("hola mundo!!") shouldBe false
     }
 
+    // ---------------------------------------------------------------
+    // Solo dígitos ASCII: regresión, ver docs/decisiones/0004-...
+    // Char.isDigit()/Char.digitToInt() de Kotlin aceptan cualquier dígito
+    // Unicode de la categoría Nd, no solo 0-9. "20-12345678-6" con cada
+    // dígito reescrito en otro sistema numérico tiene que rechazarse igual
+    // que si tuviera letras.
+    // ---------------------------------------------------------------
+
+    "rechaza dígitos arábigo-índico aunque el valor numérico cierre" {
+        // "20-12345678-6" con cada dígito ASCII reemplazado por su
+        // equivalente arábigo-índico (٠-٩, U+0660 a U+0669).
+        Cuit.isValid("٢٠-١٢٣٤٥٦٧٨-٦") shouldBe false
+    }
+
+    "rechaza dígitos devanagari aunque el valor numérico cierre" {
+        // "20-12345678-6" con cada dígito ASCII reemplazado por su
+        // equivalente devanagari (०-९, U+0966 a U+096F).
+        Cuit.isValid("२०-१२३४५६७८-६") shouldBe false
+    }
+
+    "parse rechaza dígitos arábigo-índico" {
+        Cuit.parseOrNull("٢٠-١٢٣٤٥٦٧٨-٦").shouldBeNull()
+        shouldThrow<IllegalArgumentException> {
+            Cuit.parse("٢٠-١٢٣٤٥٦٧٨-٦")
+        }
+    }
+
+    "parse rechaza dígitos devanagari" {
+        Cuit.parseOrNull("२०-१२३४५६७८-६").shouldBeNull()
+        shouldThrow<IllegalArgumentException> {
+            Cuit.parse("२०-१२३४५६७८-६")
+        }
+    }
+
+    "calcularDigitoVerificador rechaza cuerpos con dígitos arábigo-índico" {
+        // "2012345678" con cada dígito ASCII reemplazado por su equivalente
+        // arábigo-índico.
+        shouldThrow<IllegalArgumentException> {
+            Cuit.calcularDigitoVerificador("٢٠١٢٣٤٥٦٧٨")
+        }
+    }
+
+    "calcularDigitoVerificador rechaza cuerpos con dígitos devanagari" {
+        // "2012345678" con cada dígito ASCII reemplazado por su equivalente
+        // devanagari.
+        shouldThrow<IllegalArgumentException> {
+            Cuit.calcularDigitoVerificador("२०१२३४५६७८")
+        }
+    }
+
     "parseOrNull devuelve null en vez de tirar" {
         Cuit.parseOrNull("20-12345678-7").shouldBeNull()
     }

@@ -10,7 +10,11 @@ package io.github.ninsumb.identificadores
  * La validación es puramente estructural. **No** verifica que el CUIT exista ni
  * que esté vigente ante ARCA.
  *
- * @property valor los 11 dígitos, sin separadores.
+ * Solo se reconocen dígitos ASCII (`0` a `9`). Dígitos Unicode de otros
+ * sistemas numéricos (arábigo-índico, devanagari, etc.) no son válidos, aunque
+ * `Char.isDigit()`/`Char.digitToInt()` de Kotlin los acepten.
+ *
+ * @property valor los 11 dígitos ASCII (`0` a `9`), sin separadores.
  */
 public class Cuit private constructor(
     public val valor: String,
@@ -76,6 +80,8 @@ public class Cuit private constructor(
 
         /**
          * Parsea un CUIT. Acepta guiones, puntos y espacios como separadores.
+         * Solo reconoce dígitos ASCII (`0` a `9`); dígitos Unicode de otros
+         * sistemas numéricos se rechazan.
          *
          * @throws IllegalArgumentException si el input no es un CUIT válido.
          */
@@ -115,15 +121,17 @@ public class Cuit private constructor(
          *
          * Ver `docs/decisiones/0004-casos-limite-modulo-11.md`.
          *
-         * @param cuerpo exactamente 10 dígitos.
+         * @param cuerpo exactamente 10 dígitos ASCII (`0` a `9`). Un dígito
+         *   Unicode de otro sistema numérico (arábigo-índico, devanagari,
+         *   etc.) no cuenta como dígito acá y hace fallar la precondición.
          * @return el dígito esperado (0-9), o `null` si el resto es 1.
          */
         internal fun calcularDigitoVerificador(cuerpo: String): Int? {
             require(cuerpo.length == LONGITUD_CUERPO) {
                 "El cuerpo debe tener $LONGITUD_CUERPO dígitos, tiene ${cuerpo.length}"
             }
-            require(cuerpo.all { it.isDigit() }) {
-                "El cuerpo debe contener solo dígitos"
+            require(cuerpo.all(::esDigitoAscii)) {
+                "El cuerpo debe contener solo dígitos ASCII (0-9)"
             }
 
             var suma = 0
@@ -151,8 +159,8 @@ public class Cuit private constructor(
         }
 
         /**
-         * Quita separadores y valida la forma. Devuelve 11 dígitos limpios,
-         * o `null` si el input no puede ser un CUIT.
+         * Quita separadores y valida la forma. Devuelve 11 dígitos ASCII
+         * limpios, o `null` si el input no puede ser un CUIT.
          *
          * No comprueba el dígito verificador: eso es responsabilidad de quien
          * llama.
@@ -160,9 +168,21 @@ public class Cuit private constructor(
         private fun normalizar(input: String): String? {
             val limpio = input.filterNot { it == '-' || it == '.' || it.isWhitespace() }
             if (limpio.length != LONGITUD) return null
-            if (!limpio.all { it.isDigit() }) return null
+            if (!limpio.all(::esDigitoAscii)) return null
             return limpio
         }
+
+        /**
+         * Determina si un carácter es un dígito ASCII (`0` a `9`).
+         *
+         * Deliberadamente más estricto que `Char.isDigit()`, que en Kotlin/JVM
+         * acepta cualquier dígito Unicode de la categoría `Nd` (arábigo-índico,
+         * devanagari, etc.). Aceptar esos dígitos rompería la promesa de
+         * [valor] de contener solo `0`-`9`, y `Char.digitToInt()` no lo
+         * delataría: también sabe interpretarlos y les asigna su valor
+         * numérico sin quejarse.
+         */
+        private fun esDigitoAscii(c: Char): Boolean = c in '0'..'9'
     }
 }
 

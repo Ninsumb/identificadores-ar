@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.filter
 import io.kotest.property.arbitrary.int
 import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 
 /**
@@ -105,6 +106,22 @@ class CuitPropertyTest : StringSpec({
 
         checkAll(cuerpoSinDv, Arb.int(0..9)) { c, dv ->
             Cuit.isValid(c + dv) shouldBe false
+        }
+    }
+
+    /**
+     * Regresión: `Char.isDigit()`/`Char.digitToInt()` de Kotlin aceptan
+     * cualquier dígito Unicode de la categoría `Nd`, no solo ASCII. Ningún
+     * `Cuit` construido a partir de *cualquier* string debería terminar con
+     * un carácter fuera de `0`-`9` en su [Cuit.valor], sin importar qué tan
+     * raro sea el input.
+     */
+    "ningún string arbitrario produce un Cuit con caracteres fuera de 0-9" {
+        checkAll(Arb.string(0..30)) { s ->
+            val cuit = Cuit.parseOrNull(s)
+            if (cuit != null) {
+                cuit.valor.all { it in '0'..'9' } shouldBe true
+            }
         }
     }
 })
