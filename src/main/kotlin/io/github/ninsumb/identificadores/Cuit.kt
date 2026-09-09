@@ -51,6 +51,11 @@ public class Cuit private constructor(
     /** Devuelve el CUIT con guiones. Ejemplo: `"20-12345678-6"`. */
     public fun formateado(): String = "$prefijo-$numero-$digitoVerificador"
 
+    /**
+     * Devuelve [valor]: los 11 dígitos sin separadores. Ejemplo: `"20123456786"`.
+     *
+     * Para la versión con guiones, usar [formateado].
+     */
     override fun toString(): String = valor
 
     override fun equals(other: Any?): Boolean =
@@ -58,6 +63,7 @@ public class Cuit private constructor(
 
     override fun hashCode(): Int = valor.hashCode()
 
+    /** Puerta de entrada para crear o validar un [Cuit]: [parse], [parseOrNull], [isValid]. */
     public companion object {
 
         /** Pesos del módulo 11, en orden de izquierda a derecha. */
@@ -188,7 +194,10 @@ public class Cuit private constructor(
 
 /** Tipo de persona inferido del prefijo del CUIT. Ver [Cuit.tipoPersona]. */
 public enum class TipoPersona {
+    /** El prefijo está en la lista conocida de personas físicas: `20`, `23`, `24` o `27`. */
     FISICA,
+
+    /** El prefijo está en la lista conocida de personas jurídicas: `30`, `33` o `34`. */
     JURIDICA,
 
     /**
