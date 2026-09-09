@@ -10,7 +10,7 @@ package io.github.ninsumb.identificadores
  * delataría: también sabe interpretarlos y les asigna su valor numérico sin
  * quejarse.
  *
- * Punto único de esta decisión para todo el paquete: lo usan [Cuit] y
+ * Punto único de esta decisión para todo el paquete: lo usan [Cuit], [Dni] y
  * [ClaveBancaria] (con sus subtipos [Cbu] y [Cvu]).
  */
 internal fun esDigitoAscii(c: Char): Boolean = c in '0'..'9'

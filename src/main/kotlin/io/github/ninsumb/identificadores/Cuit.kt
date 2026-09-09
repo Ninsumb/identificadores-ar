@@ -1,5 +1,23 @@
 package io.github.ninsumb.identificadores
 
+/** Pesos del módulo 11, en orden de izquierda a derecha. */
+private val PESOS: IntArray = intArrayOf(5, 4, 3, 2, 7, 6, 5, 4, 3, 2)
+
+private const val LONGITUD: Int = 11
+private const val LONGITUD_CUERPO: Int = 10
+private const val MODULO: Int = 11
+
+/**
+ * Prefijos conocidos de personas físicas.
+ *
+ * La lista es deliberadamente conservadora: un prefijo ausente no invalida
+ * el CUIT, solo lo deja en [TipoPersona.DESCONOCIDO].
+ */
+private val PREFIJOS_FISICAS: Set<String> = setOf("20", "23", "24", "27")
+
+/** Prefijos conocidos de personas jurídicas. */
+private val PREFIJOS_JURIDICAS: Set<String> = setOf("30", "33", "34")
+
 /**
  * Clave Única de Identificación Tributaria / Laboral.
  *
@@ -58,31 +76,15 @@ public class Cuit private constructor(
      */
     override fun toString(): String = valor
 
+    /** Dos [Cuit] son iguales si tienen el mismo [valor]. */
     override fun equals(other: Any?): Boolean =
         this === other || (other is Cuit && valor == other.valor)
 
+    /** Coherente con [equals]: se basa en [valor]. */
     override fun hashCode(): Int = valor.hashCode()
 
     /** Puerta de entrada para crear o validar un [Cuit]: [parse], [parseOrNull], [isValid]. */
     public companion object {
-
-        /** Pesos del módulo 11, en orden de izquierda a derecha. */
-        private val PESOS: IntArray = intArrayOf(5, 4, 3, 2, 7, 6, 5, 4, 3, 2)
-
-        private const val LONGITUD: Int = 11
-        private const val LONGITUD_CUERPO: Int = 10
-        private const val MODULO: Int = 11
-
-        /**
-         * Prefijos conocidos de personas físicas.
-         *
-         * La lista es deliberadamente conservadora: un prefijo ausente no
-         * invalida el CUIT, solo lo deja en [TipoPersona.DESCONOCIDO].
-         */
-        private val PREFIJOS_FISICAS: Set<String> = setOf("20", "23", "24", "27")
-
-        /** Prefijos conocidos de personas jurídicas. */
-        private val PREFIJOS_JURIDICAS: Set<String> = setOf("30", "33", "34")
 
         /**
          * Parsea un CUIT. Acepta guiones, puntos y espacios como separadores.
