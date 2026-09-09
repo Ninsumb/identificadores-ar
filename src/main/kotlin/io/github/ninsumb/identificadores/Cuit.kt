@@ -172,23 +172,11 @@ public class Cuit private constructor(
          * llama.
          */
         private fun normalizar(input: String): String? {
-            val limpio = input.filterNot { it == '-' || it == '.' || it.isWhitespace() }
+            val limpio = quitarSeparadores(input)
             if (limpio.length != LONGITUD) return null
             if (!limpio.all(::esDigitoAscii)) return null
             return limpio
         }
-
-        /**
-         * Determina si un carácter es un dígito ASCII (`0` a `9`).
-         *
-         * Deliberadamente más estricto que `Char.isDigit()`, que en Kotlin/JVM
-         * acepta cualquier dígito Unicode de la categoría `Nd` (arábigo-índico,
-         * devanagari, etc.). Aceptar esos dígitos rompería la promesa de
-         * [valor] de contener solo `0`-`9`, y `Char.digitToInt()` no lo
-         * delataría: también sabe interpretarlos y les asigna su valor
-         * numérico sin quejarse.
-         */
-        private fun esDigitoAscii(c: Char): Boolean = c in '0'..'9'
     }
 }
 
