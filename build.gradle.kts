@@ -40,6 +40,12 @@ kotlin {
     // declarados en todo lo público. Molesto al principio, indispensable en una
     // librería.
     explicitApi()
+
+    compilerOptions {
+        // Un warning que nadie mira es un error que se descubre tarde. Que
+        // rompa el build es la única forma de que no se acumulen.
+        allWarningsAsErrors.set(true)
+    }
 }
 
 java {
