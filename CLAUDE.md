@@ -15,17 +15,32 @@ Sin dependencias de runtime. Publicable en Maven Central.
 - **Cero dependencias de runtime.** Solo de test.
 - Commits en formato Conventional Commits, en imperativo y castellano.
 - Todo módulo lleva tests concretos **y** property-based con Kotest.
-- Todo tipo público lleva KDoc. Es parte del producto: de ahí sale el
-  javadoc JAR que exige Maven Central. No borrar KDoc nunca.
+- Todo miembro público lleva KDoc, sin excepción para overrides triviales
+  (`equals`, `hashCode`, `toString`) ni para el companion object. Es parte
+  del producto: de ahí sale el javadoc JAR que exige Maven Central. No
+  borrar KDoc nunca.
 - Los value objects son válidos por construcción: constructor privado
   o internal, y `parse` / `parseOrNull` / `isValid` como única entrada.
+  Todos exponen además `formateado()` (una representación legible, con
+  separadores) y los overrides de `toString`/`equals`/`hashCode`. En un
+  módulo con más de un tipo (como `ClaveBancaria`/`Cbu`/`Cvu`), lo que sea
+  común a todos los subtipos se define una sola vez en el tipo compartido,
+  no repetido en cada uno.
 - `@JvmStatic` en los companion, para interoperar con Java.
+- Las constantes privadas de cada módulo (`private const val` / `private val`)
+  van a nivel de archivo, no anidadas en el companion — incluso si el módulo
+  tiene un solo tipo. Es necesario para los módulos con más de un tipo (como
+  `ClaveBancaria`/`Cbu`/`Cvu`, que comparten constantes entre companions
+  distintos) y se aplica parejo para que la ubicación no dependa de cuántos
+  tipos tenga el archivo.
 
 ## Antes de dar algo por terminado
 
 1. `./gradlew build` en verde.
 2. Marcar el checkbox correspondiente en `ALCANCE.md`.
-3. Tildar el módulo en el issue #6 (property testing).
+3. Actualizar en el mismo pase la tabla de estado del README y agregar los
+   ejemplos de uso del módulo. No alcanza con tildar `ALCANCE.md`.
+4. Tildar el módulo en el issue #6 (property testing).
 
 ## Qué NO hacer
 

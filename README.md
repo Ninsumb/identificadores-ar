@@ -67,6 +67,25 @@ Acepta guiones, puntos y espacios como separadores, o ninguno.
 Ni `Cbu` ni `Cvu` resuelven el nombre del banco o la billetera: eso está a
 propósito fuera del value object, ver "Qué no hace" más abajo.
 
+### DNI
+
+```kotlin
+// Validar sin construir nada
+Dni.isValid("12345678")     // true
+
+// Parsear (tira si es inválido)
+val dni = Dni.parse("1234567")
+dni.valor                    // "01234567": siempre 8 dígitos, con ceros a la izquierda
+dni.formateado()             // "1.234.567": puntos de miles, sin el cero de relleno
+
+// Para input de usuario
+val quizasDni = Dni.parseOrNull(loQueEscribioElUsuario)
+```
+
+Acepta guiones, puntos y espacios como separadores, o ninguno, y completa
+con ceros a la izquierda hasta 8 dígitos: `Dni.parse("6")` y
+`Dni.parse("00000006")` son el mismo `Dni`.
+
 ## Estado
 
 En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto y
@@ -76,7 +95,7 @@ las decisiones de diseño.
 |---|---|
 | CUIT / CUIL | ✅ Implementado |
 | CBU / CVU | ✅ Implementado |
-| DNI | 🚧 Pendiente |
+| DNI | ✅ Implementado |
 | Alias bancario | 🚧 Pendiente |
 
 ## Qué no hace
@@ -92,6 +111,11 @@ las decisiones de diseño.
   responsabilidad de un catálogo externo, reemplazable y con su propia
   fecha de vigencia.
 - No hace llamadas de red. Todo el cómputo es local.
+- El DNI no tiene dígito verificador, así que `Dni` valida solo longitud y
+  composición: acepta prácticamente cualquier número de 1 a 8 dígitos que no
+  sea todo ceros. Su valor como tipo no está en filtrar input -filtra casi
+  nada-, sino en existir como un tipo propio, distinto de un `String`
+  arbitrario.
 
 ## Licencia
 

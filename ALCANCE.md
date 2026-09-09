@@ -12,21 +12,23 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 ## Dentro del alcance
 
 ### CUIT / CUIL
-- [x] Validación de dígito verificador (módulo 11)
+- [x] Validación del dígito verificador (módulo 11)
 - [x] Parseo de componentes: prefijo, número, dígito verificador
 - [x] Inferencia de tipo de persona (física / jurídica / desconocido) a partir del prefijo
 - [x] Formateo con y sin separadores
 - [x] Tolerancia de entrada: guiones, puntos, espacios, o sin separadores
-- [x] Validación del dígito verificador
 
 ### CBU / CVU
 - [x] Validación de la estructura de 22 dígitos en dos bloques
 - [x] Validación del doble dígito verificador
 - [x] Extracción de código de entidad y sucursal (CBU), código de PSP (CVU), y número de cuenta
+- [x] Formateo con los dos bloques separados por un espacio
 - [ ] Lookup del nombre de la entidad a partir del código
 
 ### DNI
-- [ ] Validación estructural
+- [x] Validación estructural (longitud y composición, sin dígito verificador)
+- [x] Tolerancia de entrada: guiones, puntos, espacios, o sin ceros a la izquierda
+- [x] Formateo con puntos de miles
 
 ### Alias bancario
 - [ ] Validación de formato (longitud y caracteres permitidos)
@@ -76,7 +78,7 @@ justificación extensa, están en [`docs/decisiones/`](docs/decisiones/).
 La versión 1.0.0 sale cuando se cumple todo esto:
 
 - [ ] Todos los ítems del alcance implementados
-- [ ] Cobertura de tests con casos concretos **y** property-based testing
+- [x] Cobertura de tests con casos concretos **y** property-based testing
 - [x] `./gradlew build` pasa en limpio
 - [ ] CI en GitHub Actions corriendo los tests en cada push
 - [ ] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
