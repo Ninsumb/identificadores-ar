@@ -130,6 +130,26 @@ public sealed interface ClaveBancaria {
     /** El dígito verificador del segundo bloque, el último dígito (posición 22). */
     public val digitoVerificadorBloque2: Int
 
+    /**
+     * Devuelve la clave con [bloque1] y [bloque2] separados por un espacio.
+     * Ejemplo: `"01100594 00000000000017"`.
+     *
+     * Definida acá, no en [Cbu] ni en [Cvu], porque la división en dos
+     * bloques es común a ambos subtipos.
+     *
+     * La división sale de la estructura que fija
+     * `docs/decisiones/0001-cbu-vs-cvu.md` -bloque de 8 dígitos y bloque de
+     * 14-, **no** de una convención de visualización normalizada para
+     * CBU/CVU: a diferencia de [Cuit.formateado], no hay una fuente que
+     * confirme que el sistema bancario muestre estas claves de alguna forma
+     * en particular. El separador es un espacio -no el guion de
+     * `Cuit.formateado()`, para no sugerir que es el mismo tipo de división
+     * sobre un formato distinto-, y nada más: ninguna subdivisión en grupos
+     * más chicos (de a cuatro, por ejemplo) tendría respaldo estructural.
+     */
+    public fun formateado(): String = "$bloque1 $bloque2"
+
+    /** Puerta de entrada para crear o validar una [ClaveBancaria] de cualquier subtipo: [parse], [parseOrNull], [isValid]. */
     public companion object {
 
         /**
@@ -208,11 +228,14 @@ public class Cbu internal constructor(
     /** Devuelve [valor]: los 22 dígitos sin separadores. */
     override fun toString(): String = valor
 
+    /** Dos [Cbu] son iguales si tienen el mismo [valor]. */
     override fun equals(other: Any?): Boolean =
         this === other || (other is Cbu && valor == other.valor)
 
+    /** Coherente con [equals]: se basa en [valor]. */
     override fun hashCode(): Int = valor.hashCode()
 
+    /** Puerta de entrada para crear o validar un [Cbu]: [parse], [parseOrNull], [isValid]. */
     public companion object {
 
         /**
@@ -285,11 +308,14 @@ public class Cvu internal constructor(
     /** Devuelve [valor]: los 22 dígitos sin separadores. */
     override fun toString(): String = valor
 
+    /** Dos [Cvu] son iguales si tienen el mismo [valor]. */
     override fun equals(other: Any?): Boolean =
         this === other || (other is Cvu && valor == other.valor)
 
+    /** Coherente con [equals]: se basa en [valor]. */
     override fun hashCode(): Int = valor.hashCode()
 
+    /** Puerta de entrada para crear o validar un [Cvu]: [parse], [parseOrNull], [isValid]. */
     public companion object {
 
         /**

@@ -187,6 +187,18 @@ class ClaveBancariaTest : StringSpec({
     }
 
     // ---------------------------------------------------------------
+    // formateado(): los dos bloques separados por un espacio
+    // ---------------------------------------------------------------
+
+    "formatea un CBU con los dos bloques separados por un espacio" {
+        Cbu.parse("0110059400000000000017").formateado() shouldBe "01100594 00000000000017"
+    }
+
+    "formatea un CVU con los dos bloques separados por un espacio" {
+        Cvu.parse("0000001700000000000017").formateado() shouldBe "00000017 00000000000017"
+    }
+
+    // ---------------------------------------------------------------
     // toString
     // ---------------------------------------------------------------
 

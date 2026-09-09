@@ -114,6 +114,13 @@ class ClaveBancariaPropertyTest : StringSpec({
         }
     }
 
+    "parsear el resultado de formateado() da la misma clave" {
+        checkAll(claveValida) { valor ->
+            val clave = ClaveBancaria.parse(valor)
+            ClaveBancaria.parse(clave.formateado()) shouldBe clave
+        }
+    }
+
     "los componentes de un Cbu reconstruyen el valor original" {
         checkAll(cbuValido) { valor ->
             val cbu = Cbu.parse(valor)
