@@ -13,11 +13,11 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 
 ### CUIT / CUIL
 - [x] Validación de dígito verificador (módulo 11)
-- [x] Parseo de componentes: prefijo, cuerpo, dígito verificador
+- [x] Parseo de componentes: prefijo, número, dígito verificador
 - [x] Inferencia de tipo de persona (física / jurídica / desconocido) a partir del prefijo
 - [x] Formateo con y sin separadores
 - [x] Tolerancia de entrada: guiones, puntos, espacios, o sin separadores
-- [x] Cálculo del dígito verificador esperado para un cuerpo de 10 dígitos
+- [x] Validación del dígito verificador
 
 ### CBU / CVU
 - [ ] Validación de la estructura de 22 dígitos en dos bloques
@@ -77,7 +77,7 @@ La versión 1.0.0 sale cuando se cumple todo esto:
 
 - [ ] Todos los ítems del alcance implementados
 - [ ] Cobertura de tests con casos concretos **y** property-based testing
-- [ ] `./gradlew build` pasa en limpio
+- [x] `./gradlew build` pasa en limpio
 - [ ] CI en GitHub Actions corriendo los tests en cada push
 - [ ] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
   y un resumen de las decisiones de diseño
