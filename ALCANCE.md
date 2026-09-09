@@ -20,9 +20,9 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 - [x] Validación del dígito verificador
 
 ### CBU / CVU
-- [ ] Validación de la estructura de 22 dígitos en dos bloques
-- [ ] Validación del doble dígito verificador
-- [ ] Extracción de entidad, sucursal y número de cuenta
+- [x] Validación de la estructura de 22 dígitos en dos bloques
+- [x] Validación del doble dígito verificador
+- [x] Extracción de código de entidad y sucursal (CBU), código de PSP (CVU), y número de cuenta
 - [ ] Lookup del nombre de la entidad a partir del código
 
 ### DNI
