@@ -51,8 +51,15 @@ Sin dependencias de runtime. Publicable en Maven Central.
 - No implementar nada fuera de `ALCANCE.md`; va a issue con etiqueta `futuro`.
 - No inventar valores de prueba: todo CUIT o CBU de test tiene que estar
   verificado a mano, con el cálculo en un comentario.
-- No completar la configuración de publicación todavía (Fase 6). El build ya
-  aplica el plugin `maven-publish` con un esqueleto de `publishing { }`: es
-  deliberado y **no se saca**, pero está incompleto (falta el POM con licencia
-  y desarrolladores, la firma de artefactos y el repositorio destino). Todo eso
-  es Fase 6. El CI (Fase 5) ya está: ver `.github/workflows/ci.yml`.
+- No adelantar la configuración de Maven Central. La publicación va en dos fases:
+  - **Fase 6 — JitPack.** Build en el servidor de JitPack, sin credenciales ni
+    repositorio destino. La versión se deriva del tag de Git vía `-Pversion`
+    (los tags llevan prefijo `v`, que el build recorta) y `jitpack.yml` fija el
+    JDK. La coordenada en JitPack es `com.github.Ninsumb:identificadores-ar`,
+    impuesta por la cuenta de GitHub; el `group` del build no la cambia.
+  - **Fase 7 — Maven Central.** Recién acá van el POM completo (licencia,
+    desarrolladores, SCM), el javadoc JAR, la firma GPG de los artefactos y el
+    repositorio destino. La coordenada pasa a `io.github.ninsumb:identificadores-ar`
+    (el `group` del build ya apunta ahí). No bloquea la 1.0.0.
+  El `publishing { }` con `maven-publish` es deliberado y **no se saca**. El CI
+  (Fase 5) ya está: ver `.github/workflows/ci.yml`.

@@ -93,4 +93,12 @@ La versión 1.0.0 sale cuando se cumple todo esto:
 - [x] CI en GitHub Actions corriendo los tests en cada push
 - [ ] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
   y un resumen de las decisiones de diseño
-- [ ] Publicada y consumible desde un proyecto externo
+- [ ] **Fase 6 — JitPack.** Publicada en JitPack (coordenada
+  `com.github.Ninsumb:identificadores-ar`, versión derivada del tag de Git) y
+  verificada desde un proyecto de prueba externo que la consuma **desde Kotlin
+  y desde Java**.
+
+La publicación en **Maven Central** bajo `io.github.ninsumb` es la **Fase 7** y
+**no bloquea la 1.0.0**: se hace cuando el mecanismo de JitPack está probado.
+Suma el POM completo, el javadoc JAR y la firma de artefactos. El `group` del
+build ya está puesto en `io.github.ninsumb` para esa fase.
