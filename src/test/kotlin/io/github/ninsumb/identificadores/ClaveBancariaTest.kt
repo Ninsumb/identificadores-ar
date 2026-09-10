@@ -24,7 +24,7 @@ class ClaveBancariaTest : StringSpec({
 
     "acepta un CBU válido" {
         // entidad=011 sucursal=0059 -> cuerpo1=0110059, pesos[7,1,3,9,7,1,3]
-        // suma = 0+1+3+0+0+0+27 = ... calculado con calcularDigitoVerificadorModulo10: suma=36, resto=6, dv1=4
+        // suma = 0+1+3+0+0+5+27 = 36, resto=6, dv1=4
         // cuenta=0000000000001 -> suma=3, resto=3, dv2=7
         Cbu.isValid("0110059400000000000017") shouldBe true
         ClaveBancaria.isValid("0110059400000000000017") shouldBe true

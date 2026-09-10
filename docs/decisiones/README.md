@@ -10,7 +10,7 @@ que se tomó, la decisión en sí, y lo que se sigue de ella.
   nuevo que la reemplaza, y el viejo pasa a estado `Reemplazada por NNNN`. El
   objetivo es conservar el rastro de por qué se pensaba lo que se pensaba.
 - Se admiten correcciones de tipeo o de formato, no de contenido.
-- El código puede referenciarlos: `// Ver docs/decisiones/0004-....md`.
+- El código puede referenciarlos: `// Ver docs/decisiones/0004-casos-limite-modulo-11.md`.
 - **El encabezado de cada ADR lleva solo `Estado` y `Fecha`.** El número y la
   fecha ya ordenan cronológicamente; no se agregan más campos ahí.
 

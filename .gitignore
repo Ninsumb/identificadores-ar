@@ -11,10 +11,15 @@ build/
 *.ipr
 *.iws
 out/
+.vscode/
+bin/
 
 # Sistema
 .DS_Store
 Thumbs.db
+
+# Volcados de memoria de la JVM (OutOfMemoryError, jmap)
+*.hprof
 
 # Local
 local.properties

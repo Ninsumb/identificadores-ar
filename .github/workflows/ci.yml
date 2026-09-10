@@ -18,6 +18,9 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Corta un build colgado (deadlock en un test, red caída bajando Gradle)
+    # sin esperar las 6 horas del límite por defecto de GitHub.
+    timeout-minutes: 15
 
     steps:
       - name: Checkout
