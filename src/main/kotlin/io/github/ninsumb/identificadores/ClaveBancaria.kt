@@ -112,23 +112,54 @@ private fun normalizarClaveBancaria(input: String): String? {
  */
 public sealed interface ClaveBancaria {
 
-    /** Los 22 dígitos, sin separadores. */
+    /**
+     * Los 22 dígitos, sin separadores. Es lo único que aporta cada subtipo:
+     * todo el resto de esta interfaz se deriva de acá.
+     */
     public val valor: String
 
-    /** Los primeros 8 dígitos: entidad/centinela (3) + sucursal/PSP (4) + dígito verificador (1). */
+    /**
+     * Los primeros 8 dígitos: entidad/centinela (3) + sucursal/PSP (4) +
+     * dígito verificador (1).
+     *
+     * Derivado de [valor]. Definido acá, no en [Cbu] ni en [Cvu], porque la
+     * partición en bloques es idéntica en los dos subtipos —igual criterio que
+     * [formateado].
+     */
     public val bloque1: String
+        get() = valor.substring(0, LONGITUD_BLOQUE1)
 
-    /** Los últimos 14 dígitos: número de cuenta (13) + dígito verificador (1). */
+    /**
+     * Los últimos 14 dígitos: número de cuenta (13) + dígito verificador (1).
+     *
+     * Derivado de [valor], definido una sola vez para ambos subtipos.
+     */
     public val bloque2: String
+        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD)
 
-    /** Los 13 dígitos de cuenta, sin su dígito verificador. */
+    /**
+     * Los 13 dígitos de cuenta, sin su dígito verificador.
+     *
+     * Derivado de [valor], definido una sola vez para ambos subtipos.
+     */
     public val numeroCuenta: String
+        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD - 1)
 
-    /** El dígito verificador del primer bloque (posición 8). */
+    /**
+     * El dígito verificador del primer bloque (posición 8).
+     *
+     * Derivado de [valor], definido una sola vez para ambos subtipos.
+     */
     public val digitoVerificadorBloque1: Int
+        get() = valor[LONGITUD_CUERPO_BLOQUE1].digitToInt()
 
-    /** El dígito verificador del segundo bloque, el último dígito (posición 22). */
+    /**
+     * El dígito verificador del segundo bloque, el último dígito (posición 22).
+     *
+     * Derivado de [valor], definido una sola vez para ambos subtipos.
+     */
     public val digitoVerificadorBloque2: Int
+        get() = valor[LONGITUD - 1].digitToInt()
 
     /**
      * Devuelve la clave con [bloque1] y [bloque2] separados por un espacio.
@@ -202,21 +233,6 @@ public class Cbu internal constructor(
     override val valor: String,
 ) : ClaveBancaria {
 
-    override val bloque1: String
-        get() = valor.substring(0, LONGITUD_BLOQUE1)
-
-    override val bloque2: String
-        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD)
-
-    override val numeroCuenta: String
-        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD - 1)
-
-    override val digitoVerificadorBloque1: Int
-        get() = valor[LONGITUD_CUERPO_BLOQUE1].digitToInt()
-
-    override val digitoVerificadorBloque2: Int
-        get() = valor[LONGITUD - 1].digitToInt()
-
     /** Código de la entidad bancaria (BCRA). Los tres primeros dígitos. */
     public val codigoEntidad: String
         get() = valor.substring(0, 3)
@@ -285,21 +301,6 @@ public class Cbu internal constructor(
 public class Cvu internal constructor(
     override val valor: String,
 ) : ClaveBancaria {
-
-    override val bloque1: String
-        get() = valor.substring(0, LONGITUD_BLOQUE1)
-
-    override val bloque2: String
-        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD)
-
-    override val numeroCuenta: String
-        get() = valor.substring(LONGITUD_BLOQUE1, LONGITUD - 1)
-
-    override val digitoVerificadorBloque1: Int
-        get() = valor[LONGITUD_CUERPO_BLOQUE1].digitToInt()
-
-    override val digitoVerificadorBloque2: Int
-        get() = valor[LONGITUD - 1].digitToInt()
 
     /** Código del proveedor de servicios de pago (PSP). Dígitos 4 a 7. */
     public val codigoPsp: String
