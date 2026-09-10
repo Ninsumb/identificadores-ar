@@ -1,3 +1,5 @@
+import org.gradle.api.tasks.testing.logging.TestExceptionFormat
+
 plugins {
     // Plugin de Kotlin para la JVM. Chequeá la última versión estable antes de
     // fijarla: https://kotlinlang.org/docs/releases.html
@@ -59,6 +61,16 @@ tasks.test {
     // Kotest corre sobre la plataforma JUnit 5. Sin esta línea, los tests no
     // se ejecutan y Gradle no te avisa: simplemente reporta cero tests.
     useJUnitPlatform()
+
+    // Que un test fallado imprima el assert en la consola, no solo
+    // "> Task :test FAILED". En el CI eso evita tener que bajar el artefacto
+    // del reporte para saber qué se rompió. Solo el evento "failed": los
+    // tests que pasan no ensucian el log. FULL incluye el stack trace y las
+    // causas encadenadas de la excepción.
+    testLogging {
+        events("failed")
+        exceptionFormat = TestExceptionFormat.FULL
+    }
 }
 
 publishing {
