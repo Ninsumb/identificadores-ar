@@ -35,3 +35,12 @@ que se tomó, la decisión en sí, y lo que se sigue de ella.
 | [0006](0006-dni-validacion-estructural.md) | DNI: validación estructural sin dígito verificador, forma canónica con ceros | Aceptada |
 | [0007](0007-alias-bancario-validacion-de-forma.md) | Alias bancario: validación de forma, identidad en la forma canónica en minúsculas | Aceptada |
 | [0008](0008-catalogos-de-nombres.md) | Catálogos de nombres: dos interfaces inyectables, tablas embebidas vacías en 1.0.0 | Aceptada |
+
+> **Nota (0003 → 0008):** el [ADR 0003](0003-catalogo-de-entidades.md) esboza el
+> catálogo como una única interfaz `CatalogoEntidades` con `nombre()` y
+> `EMBEBIDO`. La forma final implementada —dos interfaces separadas
+> (`CatalogoEntidades` y `CatalogoPsp`), cada una con `vigencia`, y ambas tablas
+> embebidas vacías en 1.0.0— está definida en el
+> [ADR 0008](0008-catalogos-de-nombres.md). El 0003 sigue vigente en su
+> decisión de fondo (el nombre se resuelve fuera del value object, detrás de una
+> interfaz reemplazable); solo el boceto de la interfaz quedó desactualizado.
