@@ -1,0 +1,8 @@
+# Configuración del servidor de build de JitPack (Fase 6).
+#
+# Fija el JDK al mismo que usa el CI (.github/workflows/ci.yml: Temurin 17) y
+# el toolchain de Gradle (build.gradle.kts: jvmToolchain(17)). Sin esto JitPack
+# usa un JDK por defecto más viejo y el build puede romper al resolver el
+# toolchain o por diferencias de compilador (el build tiene allWarningsAsErrors).
+jdk:
+  - openjdk17

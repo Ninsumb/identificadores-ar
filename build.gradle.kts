@@ -10,10 +10,35 @@ plugins {
     `maven-publish`
 }
 
-// Estas dos líneas más el nombre del proyecto (en settings.gradle.kts) forman
-// las coordenadas del artefacto: group:name:version
+// El group más el nombre del proyecto (en settings.gradle.kts) y la versión de
+// abajo forman las coordenadas del artefacto: group:name:version.
+//
+// El group queda en `io.github.ninsumb` porque el destino final es Maven Central
+// (Fase 7) y esa es la coordenada definitiva. En JitPack (Fase 6) la coordenada
+// la impone la cuenta de GitHub y es `com.github.Ninsumb:identificadores-ar`,
+// sin importar lo que diga acá.
 group = "io.github.ninsumb"
-version = "0.1.0-SNAPSHOT"
+
+// La versión la fija quien publica, con -Pversion. JitPack corre
+// `gradle -Pversion=<tag> … publishToMavenLocal`, así que acá entra el nombre
+// del tag de Git. Sin -Pversion —build local, o `publishToMavenLocal` para
+// consumir desde `mavenLocal()`— cae en un SNAPSHOT.
+version = run {
+    val declarada = (findProperty("version") as? String)
+        ?.takeUnless { it == "unspecified" || it.isBlank() }
+        ?: return@run "0.1.0-SNAPSHOT"
+
+    // Los tags de versión de este repo llevan prefijo `v` (`v0.1.0`): es la
+    // convención que asumen GitHub Releases y los generadores de changelog. La
+    // coordenada Maven no lo lleva, así que se recorta el `v` inicial —solo
+    // cuando lo sigue un dígito, para no tocar `main-SNAPSHOT` ni hashes de
+    // commit, que JitPack también acepta como versión.
+    if (declarada.length > 1 && declarada[0] == 'v' && declarada[1].isDigit()) {
+        declarada.substring(1)
+    } else {
+        declarada
+    }
+}
 
 repositories {
     // De dónde se bajan las dependencias.
@@ -78,6 +103,13 @@ publishing {
         create<MavenPublication>("maven") {
             // Empaqueta el componente Java estándar: el JAR compilado, el POM
             // con las dependencias declaradas, y el sources JAR.
+            //
+            // Esto es todo lo que JitPack necesita (Fase 6): corre
+            // `publishToMavenLocal` en su servidor y sirve lo que quede en el
+            // repo local. La metadata completa del POM (licencia,
+            // desarrolladores, SCM), el javadoc JAR, la firma GPG y el
+            // repositorio destino son requisitos de Maven Central y van en la
+            // Fase 7; ver ALCANCE.md y CLAUDE.md.
             from(components["java"])
         }
     }
