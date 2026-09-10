@@ -33,3 +33,4 @@ que se tomó, la decisión en sí, y lo que se sigue de ella.
 | [0004](0004-casos-limite-modulo-11.md) | Casos límite del módulo 11 en CUIT/CUIL | Aceptada |
 | [0005](0005-modulo-10-cbu-cvu.md) | Módulo 10 en CBU/CVU: por qué no necesita casos límite | Aceptada |
 | [0006](0006-dni-validacion-estructural.md) | DNI: validación estructural sin dígito verificador, forma canónica con ceros | Aceptada |
+| [0007](0007-alias-bancario-validacion-de-forma.md) | Alias bancario: validación de forma, identidad en la forma canónica en minúsculas | Aceptada |
