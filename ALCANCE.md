@@ -31,7 +31,8 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 - [x] Formateo con puntos de miles
 
 ### Alias bancario
-- [ ] Validación de formato (longitud y caracteres permitidos)
+- [x] Validación de formato (longitud y caracteres permitidos)
+- [x] Canonización a minúsculas (el alias es insensible a mayúsculas por norma del BCRA)
 
 ---
 
@@ -46,6 +47,10 @@ fuente principal de confusión de quien la use.
 - **No genera identificadores nuevos.** No implementa la derivación DNI → CUIL
   con reasignación de prefijo. Ver [ADR 0004](docs/decisiones/0004-casos-limite-modulo-11.md).
 - **No resuelve alias a CBU.** No existe un mecanismo público para hacerlo.
+- **No aplica la lista de alias reservados ni valida su unicidad.** La nómina de
+  alias prohibidos (lenguaje ofensivo, marcas) y el registro de unicidad los
+  administra la cámara compensadora y no son públicos. `AliasBancario` valida
+  solo la forma. Ver [ADR 0007](docs/decisiones/0007-alias-bancario-validacion-de-forma.md).
 - **No valida titularidad de cuentas.** Esa información no es pública.
 - **No hace llamadas de red.** Cero I/O. Todo el cómputo es local y offline.
 - **No incluye identificadores de otros países.**

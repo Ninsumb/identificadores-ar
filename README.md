@@ -86,6 +86,32 @@ Acepta guiones, puntos y espacios como separadores, o ninguno, y completa
 con ceros a la izquierda hasta 8 dígitos: `Dni.parse("6")` y
 `Dni.parse("00000006")` son el mismo `Dni`.
 
+### Alias bancario
+
+```kotlin
+// Validar sin construir nada
+AliasBancario.isValid("juan.perez.mp")     // true
+
+// Parsear (tira si es inválido)
+val alias = AliasBancario.parse("Juan.Perez.Ahorro")
+alias.valor         // "juan.perez.ahorro": forma canónica, en minúsculas
+alias.original      // "Juan.Perez.Ahorro": lo que se escribió, para mostrar
+alias.formateado()  // "juan.perez.ahorro": igual que valor; un alias no tiene nada que formatear
+
+// El uso de mayúsculas es indistinto: estas dos son el mismo alias
+AliasBancario.parse("Mi.Alias") == AliasBancario.parse("mi.alias")   // true
+
+// Para input de usuario
+val quizasAlias = AliasBancario.parseOrNull(loQueEscribioElUsuario)
+```
+
+Longitud de 6 a 20 caracteres; letras, dígitos, `.` y `-`, nada más. Solo
+recorta los espacios de los extremos. `original` no participa de la igualdad:
+`equals`, `hashCode` y `toString` se basan únicamente en `valor`.
+
+`AliasBancario` no resuelve a qué CBU o CVU apunta el alias: eso está fuera
+del alcance, ver "Qué no hace" más abajo.
+
 ## Estado
 
 En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto y
@@ -96,7 +122,7 @@ las decisiones de diseño.
 | CUIT / CUIL | ✅ Implementado |
 | CBU / CVU | ✅ Implementado |
 | DNI | ✅ Implementado |
-| Alias bancario | 🚧 Pendiente |
+| Alias bancario | ✅ Implementado |
 
 ## Qué no hace
 
@@ -106,6 +132,12 @@ las decisiones de diseño.
   orientativa, a partir de una lista de prefijos conocidos. ARCA (ex AFIP) es
   la fuente de verdad definitiva.
 - No resuelve alias a CBU: no existe mecanismo público para hacerlo.
+- El alias bancario no tiene dígito verificador y la librería no consulta el
+  registro central, así que `AliasBancario` valida solo la forma: longitud
+  6-20 y caracteres `[A-Za-z0-9.-]`, con canonización a minúsculas. Un alias
+  bien formado puede no existir, no estar asignado a ninguna cuenta, o estar
+  en la lista de alias prohibidos (lenguaje ofensivo, marcas) que administra
+  la cámara compensadora y que no es pública.
 - No resuelve el nombre del banco ni del PSP a partir del código: expone
   `codigoEntidad`/`codigoPsp`, pero traducirlos a un nombre es
   responsabilidad de un catálogo externo, reemplazable y con su propia
