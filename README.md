@@ -1,5 +1,7 @@
 # identificadores-ar
 
+[![CI](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml/badge.svg)](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml)
+
 Librería Kotlin/JVM para validar y parsear identificadores argentinos:
 CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 

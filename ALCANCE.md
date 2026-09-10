@@ -85,7 +85,7 @@ La versión 1.0.0 sale cuando se cumple todo esto:
 - [ ] Todos los ítems del alcance implementados
 - [x] Cobertura de tests con casos concretos **y** property-based testing
 - [x] `./gradlew build` pasa en limpio
-- [ ] CI en GitHub Actions corriendo los tests en cada push
+- [x] CI en GitHub Actions corriendo los tests en cada push
 - [ ] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
   y un resumen de las decisiones de diseño
 - [ ] Publicada y consumible desde un proyecto externo

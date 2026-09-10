@@ -48,4 +48,5 @@ Sin dependencias de runtime. Publicable en Maven Central.
 - No implementar nada fuera de `ALCANCE.md`; va a issue con etiqueta `futuro`.
 - No inventar valores de prueba: todo CUIT o CBU de test tiene que estar
   verificado a mano, con el cálculo en un comentario.
-- No configurar CI ni publicación todavía (Fases 5 y 6).
+- No configurar publicación todavía (Fase 6). El CI (Fase 5) ya está: ver
+  `.github/workflows/ci.yml`.

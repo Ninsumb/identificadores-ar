@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Solo lectura del repo: este workflow compila y testea, no publica nada.
+permissions:
+  contents: read
+
+# Una corrida por rama. En las ramas de PR se cancela la anterior al pushear
+# de nuevo; en main no, para no perder el registro histórico de ninguna corrida.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configurar JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      # Cachea dependencias, wrapper y build cache de Gradle, con claves por
+      # contenido. Sin esto cada corrida vuelve a bajar todo.
+      - name: Configurar Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      # build = compileKotlin (con allWarningsAsErrors, un warning rompe acá) + test.
+      - name: Build y tests
+        run: ./gradlew build
+
+      # Siempre, incluso si el build falló: es justo cuando el reporte sirve.
+      - name: Publicar reporte de tests
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporte-tests
+          path: |
+            build/reports/tests/
+            build/test-results/
+          if-no-files-found: warn
