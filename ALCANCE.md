@@ -23,7 +23,12 @@ ocurra después va a un issue etiquetado `futuro`, no al código.
 - [x] Validación del doble dígito verificador
 - [x] Extracción de código de entidad y sucursal (CBU), código de PSP (CVU), y número de cuenta
 - [x] Formateo con los dos bloques separados por un espacio
-- [ ] Lookup del nombre de la entidad a partir del código
+- [x] Lookup del nombre de la entidad a partir del código (mecanismo:
+  interfaces `CatalogoEntidades` / `CatalogoPsp`, con `vigencia` y `EMBEBIDO`).
+  Las dos tablas embebidas vienen **vacías** en 1.0.0 —la de PSP por no haber
+  fuente oficial pública, la de bancos por no poder transcribir el anexo del
+  BCRA—; se cargan en una MINOR. Ver
+  [ADR 0008](docs/decisiones/0008-catalogos-de-nombres.md).
 
 ### DNI
 - [x] Validación estructural (longitud y composición, sin dígito verificador)

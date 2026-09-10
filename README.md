@@ -67,7 +67,25 @@ val quizasClave = ClaveBancaria.parseOrNull(loQueEscribioElUsuario)
 Acepta guiones, puntos y espacios como separadores, o ninguno.
 
 Ni `Cbu` ni `Cvu` resuelven el nombre del banco o la billetera: eso está a
-propósito fuera del value object, ver "Qué no hace" más abajo.
+propósito fuera del value object. El nombre se resuelve en un catálogo aparte:
+
+```kotlin
+// El código es estructural (vive en el value object); el nombre no.
+CatalogoEntidades.EMBEBIDO.nombre(cbu.codigoEntidad)   // null: la tabla embebida está vacía en esta versión
+CatalogoEntidades.EMBEBIDO.vigencia                     // 2026-09-10
+
+// Con tu propia nómina:
+class MiCatalogo(/* ... */) : CatalogoEntidades {
+    override val vigencia = /* fecha de corte de tus datos */
+    override fun nombre(codigo: String): String? = /* tu lookup */
+}
+MiCatalogo(/* ... */).nombre(cbu.codigoEntidad)
+```
+
+`CatalogoEntidades` (bancos, código de 3 dígitos) y `CatalogoPsp` (PSP, código
+de 4 dígitos) son interfaces separadas: las dos nóminas se actualizan por
+separado y cada una tiene su `vigencia`. Ambas tablas embebidas vienen vacías
+en esta versión, ver "Qué no hace" más abajo.
 
 ### DNI
 
@@ -141,9 +159,14 @@ las decisiones de diseño.
   en la lista de alias prohibidos (lenguaje ofensivo, marcas) que administra
   la cámara compensadora y que no es pública.
 - No resuelve el nombre del banco ni del PSP a partir del código: expone
-  `codigoEntidad`/`codigoPsp`, pero traducirlos a un nombre es
-  responsabilidad de un catálogo externo, reemplazable y con su propia
-  fecha de vigencia.
+  `codigoEntidad`/`codigoPsp`, pero traducirlos a un nombre es responsabilidad
+  de un catálogo (`CatalogoEntidades` / `CatalogoPsp`), reemplazable y con su
+  propia fecha de vigencia. **Las dos tablas embebidas vienen vacías en esta
+  versión**: la de PSP por decisión (no hay fuente oficial pública del código
+  de ruteo), la de bancos porque no se pudo transcribir el anexo oficial del
+  BCRA todavía. `EMBEBIDO.nombre(...)` devuelve `null` hasta que inyectes tu
+  propia implementación. Ver
+  [ADR 0008](docs/decisiones/0008-catalogos-de-nombres.md).
 - No hace llamadas de red. Todo el cómputo es local.
 - El DNI no tiene dígito verificador, así que `Dni` valida solo longitud y
   composición: acepta prácticamente cualquier número de 1 a 8 dígitos que no
