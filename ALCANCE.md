@@ -74,7 +74,7 @@ justificación extensa, están en [`docs/decisiones/`](docs/decisiones/).
 | API de entrada | `parse` / `parseOrNull` / `isValid` | Cada una sirve a un contexto distinto (bug, input de usuario, filtrado) |
 | Dependencias de runtime | Ninguna | Una dependencia arrastrada es un conflicto de versiones potencial |
 | Interop con Java | `@JvmStatic` en los companion | Que se vea como `Cuit.parse()` y no como `Cuit.Companion.parse()` |
-| Idioma | Tipos en castellano, miembros en inglés | Los identificadores son constructos legales sin traducción |
+| Idioma | Verbos de entrada (`parse` / `parseOrNull` / `isValid`) y overrides de la JVM (`equals` / `hashCode` / `toString`) en inglés; tipos y vocabulario de dominio (`Cuit`, `valor`, `prefijo`, `digitoVerificador`, `formateado`…) en castellano | Los verbos de entrada y los overrides son API idiomática de Kotlin/JVM; los identificadores y sus componentes son constructos legales sin traducción |
 | Modo de API | `explicitApi()` activado | Todo lo público es un compromiso de compatibilidad |
 | Módulos | Uno solo | No hay razón para fragmentar algo de este tamaño |
 | Target JVM | 17 | LTS, ampliamente adoptado |
