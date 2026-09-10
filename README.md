@@ -7,6 +7,40 @@ CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 
 > ⚠️ En desarrollo activo. La API puede cambiar hasta la versión 1.0.0.
 
+## Instalación
+
+> ⚠️ **Todavía no está publicada en Maven Central.** La coordenada de abajo
+> tiene la versión sin fijar; se completa al publicar (Fase 6). Mientras tanto,
+> `./gradlew publishToMavenLocal` y consumo desde `mavenLocal()`.
+
+<!-- COMPLETAR AL PUBLICAR (Fase 6): reemplazar VERSION por la versión liberada
+     y confirmar el groupId/artifactId definitivos. -->
+
+Gradle (Kotlin DSL):
+
+```kotlin
+dependencies {
+    implementation("io.github.ninsumb:identificadores-ar:VERSION")
+}
+```
+
+Maven:
+
+```xml
+<dependency>
+  <groupId>io.github.ninsumb</groupId>
+  <artifactId>identificadores-ar</artifactId>
+  <version>VERSION</version>
+</dependency>
+```
+
+### Requisitos
+
+- **JVM 17 o superior** en tiempo de ejecución.
+- Compilada con **Kotlin 2.1.0**; un consumidor Kotlin necesita una stdlib
+  compatible (2.1.x o posterior).
+- Sin dependencias de runtime fuera de la stdlib de Kotlin. La API de los
+  catálogos expone `java.time.LocalDate`, que es del JDK, no una dependencia.
 
 ## Uso
 
@@ -75,11 +109,20 @@ CatalogoEntidades.EMBEBIDO.nombre(cbu.codigoEntidad)   // null: la tabla embebid
 CatalogoEntidades.EMBEBIDO.vigencia                     // 2026-09-10
 
 // Con tu propia nómina:
-class MiCatalogo(/* ... */) : CatalogoEntidades {
-    override val vigencia = /* fecha de corte de tus datos */
-    override fun nombre(codigo: String): String? = /* tu lookup */
+import java.time.LocalDate
+
+class MiCatalogo(
+    private val nombres: Map<String, String>,
+    override val vigencia: LocalDate,
+) : CatalogoEntidades {
+    override fun nombre(codigo: String): String? = nombres[codigo]
 }
-MiCatalogo(/* ... */).nombre(cbu.codigoEntidad)
+
+val catalogo = MiCatalogo(
+    nombres = mapOf("011" to "Banco de la Nación Argentina"),
+    vigencia = LocalDate.of(2026, 9, 1),
+)
+catalogo.nombre(cbu.codigoEntidad)   // "Banco de la Nación Argentina"
 ```
 
 `CatalogoEntidades` (bancos, código de 3 dígitos) y `CatalogoPsp` (PSP, código
@@ -135,7 +178,7 @@ del alcance, ver "Qué no hace" más abajo.
 ## Estado
 
 En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto y
-las decisiones de diseño.
+[`docs/decisiones/`](docs/decisiones/) para las decisiones de diseño (ADRs).
 
 | Identificador | Estado |
 |---|---|
@@ -146,44 +189,63 @@ las decisiones de diseño.
 
 ## Qué no hace
 
+Es la principal fuente de confusión de quien la usa, así que va explícito. Cada
+punto tiene su justificación en [`docs/decisiones/`](docs/decisiones/).
+
+**No confirma que el identificador exista ni que esté vigente.**
+
 - No consulta el padrón de ARCA (ex AFIP): la validación es matemática, no
   verifica existencia ni vigencia.
 - No valida titularidad: no dice de quién es una cuenta, un CUIT o un alias.
   Esa información no es pública.
-- No genera identificadores nuevos. No implementa la derivación DNI → CUIL con
+
+**No genera ni transforma identificadores.**
+
+- No genera identificadores nuevos ni implementa la derivación DNI → CUIL con
   reasignación de prefijo. Ver
   [ADR 0004](docs/decisiones/0004-casos-limite-modulo-11.md).
-- No garantiza el tipo de persona: la inferencia de `tipoPersona` es
-  orientativa, a partir de una lista de prefijos conocidos. ARCA (ex AFIP) es
-  la fuente de verdad definitiva.
-- No resuelve alias a CBU: no existe mecanismo público para hacerlo.
-- El alias bancario no tiene dígito verificador y la librería no consulta el
-  registro central, así que `AliasBancario` valida solo la forma: longitud
-  6-20 y caracteres `[A-Za-z0-9.-]`, con canonización a minúsculas. Un alias
-  bien formado puede no existir, no estar asignado a ninguna cuenta, o estar
-  en la lista de alias prohibidos (lenguaje ofensivo, marcas) que administra
-  la cámara compensadora y que no es pública. Tampoco verifica la **unicidad**
-  del alias ("único e irrepetible para todo el sistema financiero", texto
-  ordenado 3.6) ni que no exista ya en el registro central: eso requiere
-  consultar la base de la cámara compensadora. Ver
+- CUIT y CUIL son la misma estructura (11 dígitos, mismo dígito verificador
+  módulo 11): los cubre el tipo `Cuit`, no hay un `Cuil` aparte ni una
+  conversión entre ambos.
+
+**No clasifica con autoridad.**
+
+- La inferencia de `tipoPersona` (física / jurídica / desconocido) es
+  orientativa, a partir de una lista de prefijos conocidos que cambia con el
+  tiempo. ARCA es la fuente de verdad definitiva.
+
+**Sobre el alias bancario.**
+
+- No resuelve a qué CBU o CVU apunta el alias: no existe un mecanismo público.
+- `AliasBancario` valida **solo la forma** (longitud 6-20, caracteres
+  `[A-Za-z0-9.-]`, canonización a minúsculas): no tiene dígito verificador y la
+  librería no hace I/O. Un alias bien formado puede no existir, no estar
+  asignado a ninguna cuenta, o estar en la lista de alias prohibidos (lenguaje
+  ofensivo, marcas) que administra la cámara compensadora y no es pública.
+- No verifica la **unicidad** del alias ("único e irrepetible para todo el
+  sistema financiero") ni que no exista ya en el registro central: requiere
+  consultar esa base. Ver
   [ADR 0007](docs/decisiones/0007-alias-bancario-validacion-de-forma.md).
-- No resuelve el nombre del banco ni del PSP a partir del código: expone
-  `codigoEntidad`/`codigoPsp`, pero traducirlos a un nombre es responsabilidad
-  de un catálogo (`CatalogoEntidades` / `CatalogoPsp`), reemplazable y con su
-  propia fecha de vigencia. **Las dos tablas embebidas vienen vacías en esta
-  versión**: la de PSP por decisión (no hay fuente oficial pública del código
-  de ruteo), la de bancos porque no se pudo transcribir el anexo oficial del
-  BCRA todavía. `EMBEBIDO.nombre(...)` devuelve `null` hasta que inyectes tu
-  propia implementación. Ver
-  [ADR 0008](docs/decisiones/0008-catalogos-de-nombres.md).
-- No hace llamadas de red. Todo el cómputo es local.
+
+**Sobre la validación estructural del DNI.**
+
+- `Dni` valida solo longitud y composición: acepta casi cualquier número de 1 a
+  8 dígitos que no sea todo ceros. Su valor está en existir como un tipo propio,
+  distinto de un `String` arbitrario, no en lo que filtra. Ver
+  [ADR 0006](docs/decisiones/0006-dni-validacion-estructural.md).
+
+**No hace I/O ni sale del dominio argentino.**
+
+- No hace llamadas de red. Todo el cómputo es local y offline.
 - No incluye identificadores de otros países.
 - No incluye validación de teléfonos ni direcciones.
-- El DNI no tiene dígito verificador, así que `Dni` valida solo longitud y
-  composición: acepta prácticamente cualquier número de 1 a 8 dígitos que no
-  sea todo ceros. Su valor como tipo no está en filtrar input -filtra casi
-  nada-, sino en existir como un tipo propio, distinto de un `String`
-  arbitrario.
+
+**No traduce códigos a nombres.** `Cbu` / `Cvu` exponen `codigoEntidad` /
+`codigoPsp`, pero el nombre del banco o del PSP se resuelve en un catálogo
+aparte (`CatalogoEntidades` / `CatalogoPsp`), reemplazable y con su propia
+`vigencia`. Las dos tablas embebidas vienen **vacías** en esta versión, así que
+`EMBEBIDO.nombre(...)` devuelve siempre `null` hasta que inyectes tu propia
+implementación. Ver [ADR 0008](docs/decisiones/0008-catalogos-de-nombres.md).
 
 ## Licencia
 
