@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml/badge.svg)](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml)
 
-Librería Kotlin/JVM para validar y parsear identificadores argentinos:
+Librería Kotlin/JVM para validar, parsear y formatear identificadores argentinos:
 CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 
 > ⚠️ En desarrollo activo. La API puede cambiar hasta la versión 1.0.0.
@@ -148,6 +148,11 @@ las decisiones de diseño.
 
 - No consulta el padrón de ARCA (ex AFIP): la validación es matemática, no
   verifica existencia ni vigencia.
+- No valida titularidad: no dice de quién es una cuenta, un CUIT o un alias.
+  Esa información no es pública.
+- No genera identificadores nuevos. No implementa la derivación DNI → CUIL con
+  reasignación de prefijo. Ver
+  [ADR 0004](docs/decisiones/0004-casos-limite-modulo-11.md).
 - No garantiza el tipo de persona: la inferencia de `tipoPersona` es
   orientativa, a partir de una lista de prefijos conocidos. ARCA (ex AFIP) es
   la fuente de verdad definitiva.
@@ -157,7 +162,11 @@ las decisiones de diseño.
   6-20 y caracteres `[A-Za-z0-9.-]`, con canonización a minúsculas. Un alias
   bien formado puede no existir, no estar asignado a ninguna cuenta, o estar
   en la lista de alias prohibidos (lenguaje ofensivo, marcas) que administra
-  la cámara compensadora y que no es pública.
+  la cámara compensadora y que no es pública. Tampoco verifica la **unicidad**
+  del alias ("único e irrepetible para todo el sistema financiero", texto
+  ordenado 3.6) ni que no exista ya en el registro central: eso requiere
+  consultar la base de la cámara compensadora. Ver
+  [ADR 0007](docs/decisiones/0007-alias-bancario-validacion-de-forma.md).
 - No resuelve el nombre del banco ni del PSP a partir del código: expone
   `codigoEntidad`/`codigoPsp`, pero traducirlos a un nombre es responsabilidad
   de un catálogo (`CatalogoEntidades` / `CatalogoPsp`), reemplazable y con su
@@ -168,6 +177,8 @@ las decisiones de diseño.
   propia implementación. Ver
   [ADR 0008](docs/decisiones/0008-catalogos-de-nombres.md).
 - No hace llamadas de red. Todo el cómputo es local.
+- No incluye identificadores de otros países.
+- No incluye validación de teléfonos ni direcciones.
 - El DNI no tiene dígito verificador, así que `Dni` valida solo longitud y
   composición: acepta prácticamente cualquier número de 1 a 8 dígitos que no
   sea todo ceros. Su valor como tipo no está en filtrar input -filtra casi

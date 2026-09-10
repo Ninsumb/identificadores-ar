@@ -1,6 +1,6 @@
 # identificadores-ar
 
-Librería Kotlin/JVM para validar identificadores argentinos.
+Librería Kotlin/JVM para validar, parsear y formatear identificadores argentinos.
 Sin dependencias de runtime. Publicable en Maven Central.
 
 ## Antes de tocar nada, leer
@@ -21,8 +21,11 @@ Sin dependencias de runtime. Publicable en Maven Central.
   borrar KDoc nunca.
 - Los value objects son válidos por construcción: constructor privado
   o internal, y `parse` / `parseOrNull` / `isValid` como única entrada.
-  Todos exponen además `formateado()` (una representación legible, con
-  separadores) y los overrides de `toString`/`equals`/`hashCode`. En un
+  Todos exponen además `formateado()` (una representación legible del valor
+  canónico; que agregue separadores u otra puntuación depende del tipo —el
+  alias no tiene nada que formatear y devuelve el valor tal cual, ver
+  [ADR 0007](docs/decisiones/0007-alias-bancario-validacion-de-forma.md)) y los
+  overrides de `toString`/`equals`/`hashCode`. En un
   módulo con más de un tipo (como `ClaveBancaria`/`Cbu`/`Cvu`), lo que sea
   común a todos los subtipos se define una sola vez en el tipo compartido,
   no repetido en cada uno.
@@ -48,5 +51,8 @@ Sin dependencias de runtime. Publicable en Maven Central.
 - No implementar nada fuera de `ALCANCE.md`; va a issue con etiqueta `futuro`.
 - No inventar valores de prueba: todo CUIT o CBU de test tiene que estar
   verificado a mano, con el cálculo en un comentario.
-- No configurar publicación todavía (Fase 6). El CI (Fase 5) ya está: ver
-  `.github/workflows/ci.yml`.
+- No completar la configuración de publicación todavía (Fase 6). El build ya
+  aplica el plugin `maven-publish` con un esqueleto de `publishing { }`: es
+  deliberado y **no se saca**, pero está incompleto (falta el POM con licencia
+  y desarrolladores, la firma de artefactos y el repositorio destino). Todo eso
+  es Fase 6. El CI (Fase 5) ya está: ver `.github/workflows/ci.yml`.

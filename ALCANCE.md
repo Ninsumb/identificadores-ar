@@ -87,7 +87,7 @@ justificación extensa, están en [`docs/decisiones/`](docs/decisiones/).
 
 La versión 1.0.0 sale cuando se cumple todo esto:
 
-- [ ] Todos los ítems del alcance implementados
+- [x] Todos los ítems del alcance implementados
 - [x] Cobertura de tests con casos concretos **y** property-based testing
 - [x] `./gradlew build` pasa en limpio
 - [x] CI en GitHub Actions corriendo los tests en cada push
