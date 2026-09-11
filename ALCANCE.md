@@ -99,7 +99,7 @@ La versión 1.0.0 sale cuando se cumple todo esto:
   y desde Java**. Ver la sección Instalación del README para la coordenada
   exacta y la distinción entre el tag (`v0.1.1`) y la versión resuelta
   (`0.1.1`).
-- [ ] **Sacar el aviso de inestabilidad, en el mismo commit que tagea 1.0.0.**
+- [x] **Sacar el aviso de inestabilidad, en el mismo commit que tagea 1.0.0.**
   El `⚠️ En desarrollo activo...` del encabezado y el `En construcción` de la
   sección Estado del README tienen que salir (o reescribirse) en ese commit,
   no después. Una versión estable publicada en Central que se sigue

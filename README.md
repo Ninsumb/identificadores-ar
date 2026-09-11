@@ -5,52 +5,55 @@
 Librería Kotlin/JVM para validar, parsear y formatear identificadores argentinos:
 CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 
-> ⚠️ En desarrollo activo. La API puede cambiar hasta la versión 1.0.0.
-
 ## Instalación
 
-> ⚠️ **Publicada en JitPack, todavía no en Maven Central.** Maven Central es
-> Fase 7 (ver [ALCANCE.md](ALCANCE.md)): cuando llegue, la coordenada va a ser
-> otra (`io.github.ninsumb:identificadores-ar`), no la de abajo.
+Coordenada de Maven Central: `io.github.ninsumb:identificadores-ar:1.0.0`.
 
 Gradle (Kotlin DSL):
 
 ```kotlin
 repositories {
     mavenCentral()
-    maven("https://jitpack.io") // acá vive identificadores-ar, hasta Fase 7
 }
 
 dependencies {
-    implementation("com.github.Ninsumb:identificadores-ar:0.1.1")
+    implementation("io.github.ninsumb:identificadores-ar:1.0.0")
 }
 ```
 
 Maven:
 
 ```xml
-<repositories>
-  <repository>
-    <id>jitpack.io</id>
-    <url>https://jitpack.io</url>
-  </repository>
-</repositories>
-
 <dependency>
-  <groupId>com.github.Ninsumb</groupId>
+  <groupId>io.github.ninsumb</groupId>
   <artifactId>identificadores-ar</artifactId>
-  <version>0.1.1</version>
+  <version>1.0.0</version>
 </dependency>
 ```
 
-> **La coordenada de JitPack no es la del `group` del build ni la del tag de
-> Git, tal cual.** JitPack la deriva de la cuenta de GitHub: `com.github.Ninsumb`
-> con `N` mayúscula (no `io.github.ninsumb`, que es para Maven Central). Y la
-> versión va **sin** el prefijo `v` del tag: el tag de esta versión es
-> `v0.1.1`, pero se pide `0.1.1`. Pedir `com.github.Ninsumb:identificadores-ar:v0.1.1`
-> (con `v`) rompe la resolución.
+### Alternativa: JitPack
 
-Para desarrollo local sin depender de JitPack: `./gradlew publishToMavenLocal`
+La librería se sigue publicando también en [JitPack](https://jitpack.io) -así
+se distribuyó antes de llegar a Maven Central, Fase 7 de `ALCANCE.md`-, con
+una coordenada distinta:
+
+```kotlin
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io")
+}
+
+dependencies {
+    implementation("com.github.Ninsumb:identificadores-ar:1.0.0")
+}
+```
+
+> **La coordenada de JitPack no es la del `group` del build.** JitPack la
+> deriva de la cuenta de GitHub: `com.github.Ninsumb` con `N` mayúscula (no
+> `io.github.ninsumb`, que es la de Maven Central). La versión, igual que en
+> Central, va sin el prefijo `v` del tag: el tag es `v1.0.0`, se pide `1.0.0`.
+
+Para desarrollo local sin depender de ninguno de los dos: `./gradlew publishToMavenLocal`
 en un checkout de este repo, y `mavenLocal()` entre los `repositories` de quien
 consume.
 
@@ -209,7 +212,9 @@ del alcance, ver "Qué no hace" más abajo.
 
 ## Estado
 
-En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto.
+Publicada y estable desde la versión 1.0.0: todo el alcance de
+[ALCANCE.md](ALCANCE.md) implementado, con cobertura de tests concretos y
+property-based.
 
 | Identificador | Estado |
 |---|---|
