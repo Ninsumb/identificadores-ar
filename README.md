@@ -9,30 +9,50 @@ CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 
 ## Instalación
 
-> ⚠️ **Todavía no está publicada en Maven Central.** La coordenada de abajo
-> tiene la versión sin fijar; se completa al publicar (Fase 6). Mientras tanto,
-> `./gradlew publishToMavenLocal` y consumo desde `mavenLocal()`.
-
-<!-- COMPLETAR AL PUBLICAR (Fase 6): reemplazar VERSION por la versión liberada
-     y confirmar el groupId/artifactId definitivos. -->
+> ⚠️ **Publicada en JitPack, todavía no en Maven Central.** Maven Central es
+> Fase 7 (ver [ALCANCE.md](ALCANCE.md)): cuando llegue, la coordenada va a ser
+> otra (`io.github.ninsumb:identificadores-ar`), no la de abajo.
 
 Gradle (Kotlin DSL):
 
 ```kotlin
+repositories {
+    mavenCentral()
+    maven("https://jitpack.io") // acá vive identificadores-ar, hasta Fase 7
+}
+
 dependencies {
-    implementation("io.github.ninsumb:identificadores-ar:VERSION")
+    implementation("com.github.Ninsumb:identificadores-ar:0.1.1")
 }
 ```
 
 Maven:
 
 ```xml
+<repositories>
+  <repository>
+    <id>jitpack.io</id>
+    <url>https://jitpack.io</url>
+  </repository>
+</repositories>
+
 <dependency>
-  <groupId>io.github.ninsumb</groupId>
+  <groupId>com.github.Ninsumb</groupId>
   <artifactId>identificadores-ar</artifactId>
-  <version>VERSION</version>
+  <version>0.1.1</version>
 </dependency>
 ```
+
+> **La coordenada de JitPack no es la del `group` del build ni la del tag de
+> Git, tal cual.** JitPack la deriva de la cuenta de GitHub: `com.github.Ninsumb`
+> con `N` mayúscula (no `io.github.ninsumb`, que es para Maven Central). Y la
+> versión va **sin** el prefijo `v` del tag: el tag de esta versión es
+> `v0.1.1`, pero se pide `0.1.1`. Pedir `com.github.Ninsumb:identificadores-ar:v0.1.1`
+> (con `v`) rompe la resolución.
+
+Para desarrollo local sin depender de JitPack: `./gradlew publishToMavenLocal`
+en un checkout de este repo, y `mavenLocal()` entre los `repositories` de quien
+consume.
 
 ### Requisitos
 
