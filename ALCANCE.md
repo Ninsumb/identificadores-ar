@@ -91,7 +91,7 @@ La versión 1.0.0 sale cuando se cumple todo esto:
 - [x] Cobertura de tests con casos concretos **y** property-based testing
 - [x] `./gradlew build` pasa en limpio
 - [x] CI en GitHub Actions corriendo los tests en cada push
-- [ ] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
+- [x] README con: qué hace, qué no hace, cómo se instala, ejemplos de uso,
   y un resumen de las decisiones de diseño
 - [x] **Fase 6 — JitPack.** Publicada en JitPack (coordenada
   `com.github.Ninsumb:identificadores-ar`, versión derivada del tag de Git) y

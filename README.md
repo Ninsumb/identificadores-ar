@@ -201,8 +201,7 @@ del alcance, ver "Qué no hace" más abajo.
 
 ## Estado
 
-En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto y
-[`docs/decisiones/`](docs/decisiones/) para las decisiones de diseño (ADRs).
+En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto.
 
 | Identificador | Estado |
 |---|---|
@@ -210,6 +209,16 @@ En construcción. Ver [ALCANCE.md](ALCANCE.md) para el alcance del proyecto y
 | CBU / CVU | ✅ Implementado |
 | DNI | ✅ Implementado |
 | Alias bancario | ✅ Implementado |
+
+### Decisiones de diseño
+
+- **Value objects válidos por construcción.** `Cuit`, `ClaveBancaria` (`Cbu`/`Cvu`), `Dni` y `AliasBancario` no tienen constructor público: si tenés una instancia, ya es válida. La única puerta de entrada es `parse` / `parseOrNull` / `isValid`.
+- **Cero dependencias de runtime.** Una librería de validación que arrastra dependencias es un conflicto de versiones ajeno esperando a pasar.
+- **El `parse` normaliza, no solo valida.** Guiones, puntos, espacios o mayúsculas de más se resuelven ahí mismo; el valor que queda adentro ya está en su forma canónica, así que `formateado()` y `toString()` son deterministas.
+- **Lo estructural está separado de lo tabular.** Validar un CBU (dígitos, dígito verificador) no depende de saber qué banco es el código `011`; esa traducción vive en catálogos inyectables (`CatalogoEntidades` / `CatalogoPsp`) aparte del tipo que valida.
+- **Las tablas embebidas vienen vacías a propósito**, no por faltar tiempo: no hay fuente pública confiable para transcribir bancos ni PSPs sin arriesgar un dato mal cargado.
+
+El porqué de cada una, con las alternativas descartadas, está en los [ADRs](docs/decisiones/).
 
 ## Qué no hace
 
