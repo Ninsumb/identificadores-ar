@@ -1,6 +1,7 @@
 # identificadores-ar
 
 [![CI](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml/badge.svg)](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml)
+[![javadoc](https://javadoc.io/badge2/io.github.ninsumb/identificadores-ar/javadoc.svg)](https://javadoc.io/doc/io.github.ninsumb/identificadores-ar/latest/index.html)
 
 Librería Kotlin/JVM para validar, parsear y formatear identificadores argentinos:
 CUIT, CUIL, CBU, CVU, DNI y alias bancario.
@@ -8,6 +9,7 @@ CUIT, CUIL, CBU, CVU, DNI y alias bancario.
 ## Instalación
 
 Coordenada de Maven Central: `io.github.ninsumb:identificadores-ar:1.0.0`.
+Documentación de la API (Dokka): [javadoc.io](https://javadoc.io/doc/io.github.ninsumb/identificadores-ar/latest/index.html).
 
 Gradle (Kotlin DSL):
 

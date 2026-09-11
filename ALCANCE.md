@@ -104,8 +104,12 @@ La versión 1.0.0 sale cuando se cumple todo esto:
   sección Estado del README tienen que salir (o reescribirse) en ese commit,
   no después. Una versión estable publicada en Central que se sigue
   anunciando como inestable es una contradicción que queda para siempre.
+- [x] **Fase 7 — Maven Central.** Publicada en Maven Central (coordenada
+  `io.github.ninsumb:identificadores-ar:1.0.0`, POM completo, javadoc JAR con
+  Dokka y firma GPG) y verificada desde un proyecto de prueba externo que la
+  consuma **desde Kotlin y desde Java**, sobre **JDK 17 y JDK 21**. Ver la
+  sección Instalación del README para la coordenada y el link a la
+  documentación en javadoc.io.
 
-La publicación en **Maven Central** bajo `io.github.ninsumb` es la **Fase 7** y
-**no bloquea la 1.0.0**: se hace cuando el mecanismo de JitPack está probado.
-Suma el POM completo, el javadoc JAR y la firma de artefactos. El `group` del
-build ya está puesto en `io.github.ninsumb` para esa fase.
+La publicación en **Maven Central** bajo `io.github.ninsumb` (Fase 7) ya está
+hecha: ver el ítem de arriba. El `group` del build apunta ahí.
