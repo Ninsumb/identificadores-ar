@@ -56,7 +56,11 @@ consume.
 
 ### Requisitos
 
-- **JVM 17 o superior** en tiempo de ejecución.
+- **JVM 17 o superior** en tiempo de ejecución. Es el mínimo: la librería está
+  compilada con target 17, así que un consumidor en JDK 11 o anterior no puede
+  usarla, y Gradle lo va a rechazar en resolución de dependencias, no recién
+  al ejecutar. Verificada en runtime sobre **JDK 17 y JDK 21** (ambas LTS),
+  caminos Kotlin y Java, contra el artefacto publicado en JitPack.
 - Compilada con **Kotlin 2.1.0**; un consumidor Kotlin necesita una stdlib
   compatible (2.1.x o posterior).
 - Sin dependencias de runtime fuera de la stdlib de Kotlin. La API de los
