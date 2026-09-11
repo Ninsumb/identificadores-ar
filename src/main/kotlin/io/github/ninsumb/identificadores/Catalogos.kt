@@ -135,7 +135,7 @@ public interface CatalogoPsp {
          *
          * Ver `docs/decisiones/0008-catalogos-de-nombres.md`.
          */
-        @JvmField
+        @JvmStatic
         public val EMBEBIDO: CatalogoPsp = CatalogoVacio(VIGENCIA_EMBEBIDO)
     }
 }
