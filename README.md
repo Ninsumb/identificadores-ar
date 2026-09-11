@@ -94,6 +94,14 @@ la fuente de verdad definitiva.
 ### CBU / CVU
 
 ```kotlin
+// Los dos valores de abajo están verificados a mano (módulo 10, ponderador
+// cíclico 3,1,7,9 aplicado de derecha a izquierda; ver ADR 0005) y son los
+// mismos que usa la suite de tests (ClaveBancariaTest):
+//   CBU: entidad 011 + sucursal 0059 -> cuerpo1 "0110059", suma 36, dv1 = 4;
+//        cuenta 0000000000001 -> suma 3, dv2 = 7.
+//   CVU: centinela 000 + PSP 0001 -> cuerpo1 "0000001", suma 3, dv1 = 7;
+//        misma cuenta -> dv2 = 7.
+
 // Validar sin construir nada
 Cbu.isValid("0110059400000000000017")     // true
 Cvu.isValid("0000001700000000000017")     // true
@@ -130,7 +138,7 @@ propósito fuera del value object. El nombre se resuelve en un catálogo aparte:
 ```kotlin
 // El código es estructural (vive en el value object); el nombre no.
 CatalogoEntidades.EMBEBIDO.nombre(cbu.codigoEntidad)   // null: la tabla embebida está vacía en esta versión
-CatalogoEntidades.EMBEBIDO.vigencia                     // 2026-09-10
+CatalogoEntidades.EMBEBIDO.vigencia                     // LocalDate: fecha de corte de esta tabla
 
 // Con tu propia nómina:
 import java.time.LocalDate
