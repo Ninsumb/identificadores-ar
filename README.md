@@ -1,4 +1,6 @@
-# identificadores-ar
+<p align="center">
+  <img src="docs/banner.svg" alt="identificadores-ar: validación de identificadores argentinos" width="800">
+</p>
 
 [![CI](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml/badge.svg)](https://github.com/Ninsumb/identificadores-ar/actions/workflows/ci.yml)
 [![javadoc](https://javadoc.io/badge2/io.github.ninsumb/identificadores-ar/javadoc.svg)](https://javadoc.io/doc/io.github.ninsumb/identificadores-ar/latest/index.html)
